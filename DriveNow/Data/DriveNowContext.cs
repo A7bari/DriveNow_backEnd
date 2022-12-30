@@ -15,5 +15,7 @@ namespace DriveNow.Data
         }
 
         public DbSet<DriveNow.Models.User> User { get; set; } = default!;
+        public DbSet<DriveNow.Models.Car> Car { get; set; } = default!;
+
     }
 }
