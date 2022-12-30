@@ -3,8 +3,14 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using DriveNow.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<DriveNowContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DriveNowContext") ?? throw new InvalidOperationException("Connection string 'DriveNowContext' not found."))
+    );
 
 // Add services to the container.
 
