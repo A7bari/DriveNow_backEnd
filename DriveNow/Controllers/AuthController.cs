@@ -1,8 +1,12 @@
-﻿using DriveNow.Dtos;
+﻿using Azure.Core;
+using DriveNow.Data;
+using DriveNow.Dtos;
 using DriveNow.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.ConstrainedExecution;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
@@ -12,34 +16,50 @@ namespace DriveNow.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public static User user = new User();
+        private readonly DriveNowContext _context;
         private readonly IConfiguration _configuration;
 
-        public AuthController(IConfiguration configuration)
+        public AuthController(IConfiguration configuration, DriveNowContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
+      
+
+        // POST: api/Auth/register
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(UserRegisterDto request)
         {
+            if (GetUserByEmail(request.Email) != null) 
+                return BadRequest("User already exist.");
+
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            user.FirstName = request.FirstName;
-            user.LastName = request.LastName;
-            user.Email = request.Email;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            User user = new()
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt
+            };
+
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
 
             return Ok(user);
         }
 
+        // POST: api/Auth/login
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(UserLoginDto request)
         {
-            if (user.Email != request.Email)
+            User user =  GetUserByEmail(request.Email);
+
+            if (user == null)
             {
-                return BadRequest("User not found.");
+                return NotFound("User not found.");
             }
 
             if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
@@ -49,7 +69,11 @@ namespace DriveNow.Controllers
 
             string token = CreateToken(user);
 
-            return Ok(token);
+            return Ok(new
+            {
+                user,
+                token
+            });
         }
 
         private string CreateToken(User user)
@@ -91,6 +115,11 @@ namespace DriveNow.Controllers
                 var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
+        }
+
+        private User GetUserByEmail(string email)
+        {
+            return _context.User.FirstOrDefault(u => u.Email.Equals(email));
         }
     }
 }
