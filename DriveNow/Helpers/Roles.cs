@@ -2,6 +2,6 @@
 {
     public enum Roles
     {
-        Admim, Owner, Tenant
+        Admin, Owner, Tenant
     }
 }
