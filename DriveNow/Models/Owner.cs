@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DriveNow.Models
 {
-    public class Owner
+
+    [Table("Owner")]
+    public class Owner : User
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int OwnerId { get; set; }
 
         [Required]
         public string CIN { get; set; }
