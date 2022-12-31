@@ -14,6 +14,13 @@ namespace DriveNow.Data
         {
         }
 
-        public DbSet<DriveNow.Models.User> User { get; set; } = default!;
+        public DbSet<User> User { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Admin>().ToTable("Admin");
+            modelBuilder.Entity<Owner>().ToTable("Owner");
+            modelBuilder.Entity<Tenant>().ToTable("Tenant");
+        }
+
     }
 }
