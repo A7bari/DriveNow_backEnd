@@ -1,6 +1,7 @@
 ﻿using Azure.Core;
 using DriveNow.Data;
 using DriveNow.Dtos;
+using DriveNow.Helpers;
 using DriveNow.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,22 +28,78 @@ namespace DriveNow.Controllers
 
       
 
-        // POST: api/Auth/register
-        [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserRegisterDto request)
+        // POST: api/Auth/register/admin
+        [HttpPost("register/admin")]
+        public async Task<ActionResult<User>> RegisterAdmin(AdminRegisterDto request)
         {
-            if (GetUserByEmail(request.Email) != null) 
+            if (GetUserByEmail(request.Email) != null)
                 return BadRequest("User already exist.");
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            User user = new()
+            User user = new Admin()
             {
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Email = request.Email,
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
+                PasswordSalt = passwordSalt,
+                Role = Roles.Admin
+            };
+
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(user);
+        }
+
+        // POST: api/Auth/register/owner
+        [HttpPost("register/owner")]
+        public async Task<ActionResult<User>> RegisterOwner(OwnerRegisterDto request)
+        {
+            if (GetUserByEmail(request.Email) != null)
+                return BadRequest("User already exist.");
+
+            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            User user = new Owner()
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Role = Roles.Owner,
+                CIN = request.CIN,
+                Adress = request.Adress,
+                HasAgancy = request.HasAgancy
+
+            };
+
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(user);
+        }
+
+        // POST: api/Auth/register/tenant
+        [HttpPost("register/tenant")]
+        public async Task<ActionResult<User>> RegisterTenant(TenantRegiaterDto request)
+        {
+            if (GetUserByEmail(request.Email) != null)
+                return BadRequest("User already exist.");
+
+            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            User user = new Tenant()
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Role = Roles.Tenant,
+                 CIN = request.CIN
             };
 
             _context.User.Add(user);
@@ -81,7 +138,7 @@ namespace DriveNow.Controllers
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, "Admin")
+                new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -119,7 +176,9 @@ namespace DriveNow.Controllers
 
         private User GetUserByEmail(string email)
         {
+
             return _context.User.FirstOrDefault(u => u.Email.Equals(email));
+
         }
     }
 }
