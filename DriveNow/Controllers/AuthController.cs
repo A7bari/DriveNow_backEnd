@@ -61,23 +61,37 @@ namespace DriveNow.Controllers
                 return BadRequest("User already exist.");
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+           
+                User user = new Owner()
+                {
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Email = request.Email,
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt,
+                    Role = Roles.Owner,
+                    CIN = request.CIN,
+                    Adress = request.Adress,
+                    HasAgancy = request.HasAgancy,
 
-            User user = new Owner()
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                Role = Roles.Owner,
-                CIN = request.CIN,
-                Adress = request.Adress,
-                HasAgancy = request.HasAgancy
-
-            };
-
-            _context.User.Add(user);
+                };
+                _context.User.Add(user);
             await _context.SaveChangesAsync();
+            
+          
+                if (request.HasAgancy)
+                {
+
+                    Agency agency = new Agency()
+                    {
+                        Name = request.agency.Name,
+                        Adress = request.agency.Adress,
+                        OwnerId = user.Id
+                    };
+                    _context.Agency.Add(agency);
+                    await _context.SaveChangesAsync();
+                }
+        
 
             return Ok(user);
         }

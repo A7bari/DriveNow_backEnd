@@ -15,12 +15,17 @@ namespace DriveNow.Data
         }
 
         public DbSet<User> User { get; set; }
+        public DbSet<Agency> Agency { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Admin>().ToTable("Admin");
-            modelBuilder.Entity<Owner>().ToTable("Owner");
+            modelBuilder.Entity<Owner>().ToTable("Owner")
+                .HasOne(c => c.Agency)
+                .WithOne(v => v.Owner)
+                .HasForeignKey<Agency>(c => c.OwnerId);
             modelBuilder.Entity<Tenant>().ToTable("Tenant");
         }
+        public DbSet<DriveNow.Models.Owner> Owner { get; set; }
 
     }
 }

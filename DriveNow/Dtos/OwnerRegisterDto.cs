@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DriveNow.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace DriveNow.Dtos
 {
@@ -26,6 +27,8 @@ namespace DriveNow.Dtos
 
         [Required]
         public bool HasAgancy { get; set; } = false;
+
+        public AgencyRegisterDto? agency { get; set; } 
 
     }
 }
