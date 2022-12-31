@@ -108,9 +108,9 @@ namespace DriveNow.Controllers
             return Ok(user);
         }
 
-        // POST: api/Auth/login
-        [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserLoginDto request)
+        // Put: api/Auth/login
+        [HttpPut("login")]
+        public async Task<ActionResult<string>> Login([FromBody] UserLoginDto request)
         {
             User user =  GetUserByEmail(request.Email);
 
