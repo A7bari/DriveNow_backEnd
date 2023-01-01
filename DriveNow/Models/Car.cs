@@ -26,6 +26,8 @@ namespace DriveNow.Models
 
         [Required]
         public string Description { get; set; } = string.Empty;
+        
+        public List<ReservationPeriod> ReservationPeriods { get; set; }
 
     }
 }
