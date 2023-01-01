@@ -3,6 +3,7 @@ using DriveNow.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DriveNow.Migrations
 {
     [DbContext(typeof(DriveNowContext))]
-    partial class DriveNowContextModelSnapshot : ModelSnapshot
+    [Migration("20230101064810_DeleteLocationPrice")]
+    partial class DeleteLocationPrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,77 +89,9 @@ namespace DriveNow.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("User");
-
-                    b.UseTptMappingStrategy();
-                });
-
-            modelBuilder.Entity("DriveNow.Models.Admin", b =>
-                {
-                    b.HasBaseType("DriveNow.Models.User");
-
-                    b.ToTable("Admin", (string)null);
-                });
-
-            modelBuilder.Entity("DriveNow.Models.Owner", b =>
-                {
-                    b.HasBaseType("DriveNow.Models.User");
-
-                    b.Property<string>("Adress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CIN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("HasAgancy")
-                        .HasColumnType("bit");
-
-                    b.ToTable("Owner", (string)null);
-                });
-
-            modelBuilder.Entity("DriveNow.Models.Tenant", b =>
-                {
-                    b.HasBaseType("DriveNow.Models.User");
-
-                    b.Property<string>("CIN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("Tenant", (string)null);
-                });
-
-            modelBuilder.Entity("DriveNow.Models.Admin", b =>
-                {
-                    b.HasOne("DriveNow.Models.User", null)
-                        .WithOne()
-                        .HasForeignKey("DriveNow.Models.Admin", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DriveNow.Models.Owner", b =>
-                {
-                    b.HasOne("DriveNow.Models.User", null)
-                        .WithOne()
-                        .HasForeignKey("DriveNow.Models.Owner", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("DriveNow.Models.Tenant", b =>
-                {
-                    b.HasOne("DriveNow.Models.User", null)
-                        .WithOne()
-                        .HasForeignKey("DriveNow.Models.Tenant", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

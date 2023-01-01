@@ -14,6 +14,7 @@ namespace DriveNow.Data
         {
         }
 
+        public DbSet<DriveNow.Models.Car> Car { get; set; } = default!;
         public DbSet<User> User { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
