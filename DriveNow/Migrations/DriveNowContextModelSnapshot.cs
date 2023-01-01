@@ -47,9 +47,6 @@ namespace DriveNow.Migrations
                     b.Property<int>("Km")
                         .HasColumnType("int");
 
-                    b.Property<float>("LocationPrice")
-                        .HasColumnType("real");
-
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
