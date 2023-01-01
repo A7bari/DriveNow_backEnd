@@ -24,6 +24,8 @@ namespace DriveNow.Models
 
         [Required]
         public Roles Role { get; set; }
+        public List<Complain>? complains { get; set; }
+
 
     }
 }

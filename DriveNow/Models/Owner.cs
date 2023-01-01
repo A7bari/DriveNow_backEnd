@@ -23,7 +23,6 @@ namespace DriveNow.Models
        
         public Agency? Agency { get; set; }
 
-    
 
 
     }
