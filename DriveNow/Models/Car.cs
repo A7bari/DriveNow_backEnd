@@ -23,8 +23,7 @@ namespace DriveNow.Models
         public FType FuelType { get; set; } = FType.Gasoline;
         [Required]
         public int Km { get; set; }
-        [Required]
-        public float LocationPrice { get; set; }
+
         [Required]
         public string Description { get; set; } = string.Empty;
 
