@@ -124,7 +124,7 @@ namespace DriveNow.Controllers
 
         // Put: api/Auth/login
         [HttpPut("login")]
-        public async Task<ActionResult<string>> Login([FromBody] UserLoginDto request)
+        public async Task<ActionResult> Login([FromBody] UserLoginDto request)
         {
             User user =  GetUserByEmail(request.Email);
 
@@ -140,11 +140,30 @@ namespace DriveNow.Controllers
 
             string token = CreateToken(user);
 
-            return Ok(new
+            switch (user.Role)
             {
-                user,
-                token
-            });
+                case Roles.Admin:
+                    return Ok(new
+                    {
+                        user = (Admin)user,
+                        token
+                    });
+
+                case Roles.Owner:
+                    return Ok(new
+                    {
+                        user = (Owner)user,
+                        token
+                    });
+                case Roles.Tenant:
+                    return Ok(new
+                    {
+                        user = (Tenant)user,
+                        token
+                    });
+                default:
+                    return BadRequest("something went wrong");
+            }
         }
 
         private string CreateToken(User user)
@@ -190,9 +209,7 @@ namespace DriveNow.Controllers
 
         private User GetUserByEmail(string email)
         {
-
-            return _context.User.FirstOrDefault(u => u.Email.Equals(email));
-
+            return  _context.User.FirstOrDefault(u => u.Email.Equals(email));
         }
     }
 }

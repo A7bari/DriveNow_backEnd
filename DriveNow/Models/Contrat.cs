@@ -14,6 +14,6 @@ namespace DriveNow.Models
         [Required]
         public float Amount { get; set; }
         [Required]
-        public ReservationPeriods? reservationPeriods { get; set; }
+        public ReservationPeriod? reservationPeriods { get; set; }
     }
 }

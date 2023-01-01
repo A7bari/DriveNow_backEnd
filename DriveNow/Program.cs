@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using DriveNow.Data;
 using System.Text.Json.Serialization;
 
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DriveNowContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DriveNowContext") ?? throw new InvalidOperationException("Connection string 'DriveNowContext' not found."))
@@ -16,6 +17,12 @@ builder.Services.AddDbContext<DriveNowContext>(options =>
 // Add services to the container.
 
 builder.Services.AddCors();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
