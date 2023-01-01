@@ -9,6 +9,9 @@ using DriveNow.Data;
 using DriveNow.Models;
 using DriveNow.Dtos;
 using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using DriveNow.Helpers;
+using Microsoft.CodeAnalysis;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DriveNow.Controllers
 {
@@ -26,7 +29,7 @@ namespace DriveNow.Controllers
         // GET: api/Cars
         [HttpGet("{page}")]
 
-        public async Task<ActionResult<List<Car>>> GetCars(int page)
+        public async Task<ActionResult<List<Car>>> GetCars(int page,[FromQuery] Filters filter)
         {
             if(_context.Car == null)
             {
@@ -35,20 +38,75 @@ namespace DriveNow.Controllers
 
             var pageResults = 10f;
             var pageCount = Math.Ceiling(_context.Car.Count() / pageResults);
+            var cars = await _context.Car.ToListAsync();
+            if (filter.maxkilometrage.HasValue || filter.minPrice.HasValue || filter.maxPrice.HasValue || filter.typegasoile != null)
+            {
+                
+                if (filter.minPrice.HasValue)
+                {
+                    cars = cars.Where(c => c.Price >= filter.minPrice)
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+                }
+                if (filter.maxPrice.HasValue)
+                {
+                    cars = cars.Where(c => c.Price <= filter.maxPrice)
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+                }
+                if (filter.maxkilometrage.HasValue)
+                {
+                    cars = cars
+                    .Where(c => c.Km <= filter.maxkilometrage)
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+                }
+                if (filter.typegasoile.ToString() == FType.Diesel.ToString() || filter.typegasoile.ToString() == FType.Gasoline.ToString())
+                {
+                    cars = cars
+                   .Where(c => c.FuelType == filter.typegasoile)
+                   .Skip((page - 1) * (int)pageResults)
+                   .Take((int)pageResults)
+                   .ToList() ;
+                }
 
-            var cars = await _context.Car
+
+                var response = new ListResponse
+                {
+                    elements = cars,
+                    CurrentPage = page,
+                    Pages = (int)pageCount,
+                    elementsCount = _context.Car.Count()
+                };
+                return Ok(response);
+            }
+            else
+            {
+                cars = await _context.Car
                 .Skip((page - 1) * (int)pageResults)
                 .Take((int)pageResults)
                 .ToListAsync();
+                if (cars == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var response = new ListResponse
+                    {
+                        elements = cars,
+                        CurrentPage = page,
+                        Pages = (int)pageCount,
+                        elementsCount = _context.Car.Count()
+                    };
+                    return Ok(response);
 
-            var response = new CarResponse
-            {
-                Cars = cars,
-                CurrentPage = page,
-                Pages = (int)pageCount,
-                CarsCount = _context.Car.Count()
-            };
-            return Ok(response);
+                }
+
+            }
 
         }
 
@@ -88,7 +146,6 @@ namespace DriveNow.Controllers
             {
                 car.Id = id;
                 car.Km = newCar.Km;
-                car.LocationPrice = newCar.LocationPrice;
                 car.Brand = newCar.Brand;
                 car.Color = newCar.Color;
                 car.Description = newCar.Description;
@@ -132,7 +189,6 @@ namespace DriveNow.Controllers
                 FuelType = request.FuelType,
                 Km = request.Km,
                 Description = request.Description,
-                LocationPrice = request.LocationPrice,
                 ProductionYear = request.ProductionYear
             };
             _context.Car.Add(car);
