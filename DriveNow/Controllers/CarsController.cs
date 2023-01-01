@@ -74,7 +74,7 @@ namespace DriveNow.Controllers
                 }
 
 
-                var response = new ListResponse
+                var response = new ListResponse<Car>
                 {
                     elements = cars,
                     CurrentPage = page,
@@ -95,7 +95,7 @@ namespace DriveNow.Controllers
                 }
                 else
                 {
-                    var response = new ListResponse
+                    var response = new ListResponse<Car>
                     {
                         elements = cars,
                         CurrentPage = page,
