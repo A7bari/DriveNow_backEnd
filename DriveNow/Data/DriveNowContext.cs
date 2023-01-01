@@ -16,11 +16,18 @@ namespace DriveNow.Data
 
         public DbSet<DriveNow.Models.Car> Car { get; set; } = default!;
         public DbSet<User> User { get; set; }
+        public DbSet<ReservationPeriod> ReservationPeriods { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Admin>().ToTable("Admin");
             modelBuilder.Entity<Owner>().ToTable("Owner");
             modelBuilder.Entity<Tenant>().ToTable("Tenant");
+            modelBuilder.Entity<Car>()
+            .HasMany(p => p.ReservationPeriods)
+            .WithOne(c => c.Car)
+            .OnDelete(DeleteBehavior.Cascade)
+            
+            ;
         }
 
     }
