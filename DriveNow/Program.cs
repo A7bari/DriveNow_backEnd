@@ -9,8 +9,6 @@ using DriveNow.Data;
 using System.Text.Json.Serialization;
 
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DriveNowContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DriveNowContext") ?? throw new InvalidOperationException("Connection string 'DriveNowContext' not found."))
@@ -29,6 +27,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme

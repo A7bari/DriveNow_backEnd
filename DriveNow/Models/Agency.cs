@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace DriveNow.Models
 {
@@ -13,6 +14,9 @@ namespace DriveNow.Models
 
         [Required]
         public string Adress { get; set; } = string.Empty;
+        [JsonIgnore]
+        public Owner Owner { get; set; }
+        public int OwnerId { get; set; }
 
     }
 }

@@ -9,5 +9,6 @@ namespace DriveNow.Models
     { 
         [System.ComponentModel.DataAnnotations.Required]
         public string CIN { get; set; }
+
     }
 }
