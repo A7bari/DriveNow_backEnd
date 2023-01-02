@@ -14,12 +14,12 @@ namespace DriveNow.Data
         {
         }
 
-        public DbSet<DriveNow.Models.Car> Car { get; set; } = default!;
+       public DbSet<DriveNow.Models.Car> Car { get; set; } = default!;
         public DbSet<User> User { get; set; }
 
         public DbSet<Agency> Agency { get; set; }
         public DbSet<Complain> Complain { get; set; }
-        public DbSet<Tenant> Tenant { get; set; }
+
 
 
         public DbSet<ReservationPeriod> ReservationPeriods { get; set; }
@@ -34,20 +34,24 @@ namespace DriveNow.Data
             modelBuilder.Entity<Tenant>().ToTable("Tenant");
 
 
-
             modelBuilder.Entity<Complain>().ToTable("Complain")
                 .HasOne(c => c.user)
                 .WithMany(o => o.complains)
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Car>()
-            .HasMany(p => p.ReservationPeriods)
-            .WithOne(c => c.Car)
-            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Car>().ToTable("Car")
+                .HasMany(p => p.ReservationPeriods)
+                .WithOne(c => c.Car)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Car>().ToTable("Car")
+                .HasOne(u => u.user)
+                .WithMany(u => u.cars)
+                .HasForeignKey(c => c.userId)
+                .OnDelete(DeleteBehavior.Cascade);
 
         }
-        public DbSet<DriveNow.Models.Owner> Owner { get; set; }
 
     }
 }
