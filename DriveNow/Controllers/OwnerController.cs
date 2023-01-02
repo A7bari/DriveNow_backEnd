@@ -1,7 +1,9 @@
 ﻿using DriveNow.Data;
 using DriveNow.Dtos;
+using DriveNow.Helpers;
 using DriveNow.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DriveNow.Controllers
 {
@@ -37,5 +39,37 @@ namespace DriveNow.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+        // GET: api/Owners
+        [HttpGet("{page}")]
+
+        public async Task<ActionResult<List<Owner>>> GetOwners(int page)
+        {
+            if (_context.User == null)
+            {
+                return NotFound();
+            }
+
+            var pageResults = 10f;
+            var pageCount = Math.Ceiling(_context.User.Where(u => u.Role == Roles.Owner).Count() / pageResults);
+            var owners = await _context.User.Where(u => u.Role == Roles.Owner).Include(o => o.cars).ToListAsync();
+
+            
+                owners = await _context.User
+                .Skip((page - 1) * (int)pageResults)
+                .Take((int)pageResults)
+                .ToListAsync();
+
+                var response = new ListResponse<User>
+                {
+                    elements = owners,
+                    CurrentPage = page,
+                    Pages = (int)pageCount,
+                    elementsCount = _context.User.Where(u => u.Role == Roles.Owner).Count()
+                };
+                return Ok(response);
+
+            }
+
+        }
     }
-}
