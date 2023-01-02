@@ -47,7 +47,7 @@ namespace DriveNow.Controllers
 
             return dto;
         }
-    
+
         [HttpGet("CarId")]
         public async Task<ActionResult<List<ReservationPeriod>>> GetCarId(int carId)
         {

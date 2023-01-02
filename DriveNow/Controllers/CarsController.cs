@@ -29,20 +29,20 @@ namespace DriveNow.Controllers
         // GET: api/Cars
         [HttpGet("{page}")]
 
-        public async Task<ActionResult<List<Car>>> GetCars(int page,[FromQuery] Filters filter)
+        public async Task<ActionResult<List<Car>>> GetCars(int page, [FromQuery] Filters filter)
         {
-            if(_context.Car == null)
+            if (_context.Car == null)
             {
                 return NotFound();
             }
 
             var pageResults = 10f;
             var pageCount = Math.Ceiling(_context.Car.Count() / pageResults);
-            var cars = await _context.Car.Include(c=>c.ReservationPeriods).ToListAsync();
-            
+            var cars = await _context.Car.Include(c => c.ReservationPeriods).ToListAsync();
+
             if (filter.maxkilometrage.HasValue || filter.minPrice.HasValue || filter.maxPrice.HasValue || filter.typegasoile != null)
             {
-                
+
                 if (filter.minPrice.HasValue)
                 {
                     cars = cars.Where(c => c.Price >= filter.minPrice)
@@ -71,7 +71,7 @@ namespace DriveNow.Controllers
                    .Where(c => c.FuelType == filter.typegasoile)
                    .Skip((page - 1) * (int)pageResults)
                    .Take((int)pageResults)
-                   .ToList() ;
+                   .ToList();
                 }
 
 
@@ -129,9 +129,9 @@ namespace DriveNow.Controllers
         public async Task<ActionResult<List<Car>>> Search(string searchText)
         {
             return await _context.Car
-                .Where(c => c.Brand.Contains(searchText) || c.Description.Contains(searchText) || c.Color.Contains(searchText) )
+                .Where(c => c.Brand.Contains(searchText) || c.Description.Contains(searchText) || c.Color.Contains(searchText))
                 .ToListAsync();
-        } 
+        }
 
         // PUT: api/Cars/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -150,9 +150,9 @@ namespace DriveNow.Controllers
                 car.Brand = newCar.Brand;
                 car.Color = newCar.Color;
                 car.Description = newCar.Description;
-                car.Price= newCar.Price;
-                car.ProductionYear= newCar.ProductionYear;
-                car.FuelType= newCar.FuelType;
+                car.Price = newCar.Price;
+                car.ProductionYear = newCar.ProductionYear;
+                car.FuelType = newCar.FuelType;
 
                 _context.Entry(car).State = EntityState.Modified;
                 try
@@ -171,10 +171,10 @@ namespace DriveNow.Controllers
                         throw;
                     }
                 }
-                
+
             }
 
-       
+
         }
 
         // POST: api/Cars

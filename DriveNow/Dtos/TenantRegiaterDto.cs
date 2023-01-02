@@ -19,5 +19,7 @@ namespace DriveNow.Dtos
         public string RetipedPassword { get; set; } = string.Empty;
 
         public string CIN { get; set; }
+        [Phone]
+        public string? phone { get; set; }
     }
 }

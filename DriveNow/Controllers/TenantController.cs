@@ -8,7 +8,7 @@ namespace DriveNow.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TenantController:ControllerBase
+    public class TenantController : ControllerBase
     {
         private readonly DriveNowContext _context;
         private readonly IConfiguration _configuration;
@@ -18,10 +18,10 @@ namespace DriveNow.Controllers
             _configuration = configuration;
             _context = context;
         }
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         public async Task<ActionResult<Tenant>> UpdateTenant(TenantRegiaterDto tenant, int id)
         {
-            var _tenant = await _context.Tenant.FindAsync(id);
+            var _tenant = (Tenant)await _context.User.FindAsync(id);
             if (_tenant == null)
             {
                 return NotFound();

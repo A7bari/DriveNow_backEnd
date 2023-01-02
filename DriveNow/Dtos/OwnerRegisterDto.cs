@@ -28,7 +28,9 @@ namespace DriveNow.Dtos
         [Required]
         public bool HasAgancy { get; set; } = false;
 
-        public AgencyRegisterDto? agency { get; set; } 
+        public AgencyRegisterDto? agency { get; set; }
+        [Phone]
+        public string? phone { get; set; }
 
     }
 }

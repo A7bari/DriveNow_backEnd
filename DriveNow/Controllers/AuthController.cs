@@ -26,7 +26,7 @@ namespace DriveNow.Controllers
             _context = context;
         }
 
-      
+
 
         // POST: api/Auth/register/admin
         [HttpPost("register/admin")]
@@ -61,37 +61,37 @@ namespace DriveNow.Controllers
                 return BadRequest("User already exist.");
 
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-           
-                User user = new Owner()
-                {
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    Email = request.Email,
-                    PasswordHash = passwordHash,
-                    PasswordSalt = passwordSalt,
-                    Role = Roles.Owner,
-                    CIN = request.CIN,
-                    Adress = request.Adress,
-                    HasAgancy = request.HasAgancy,
 
-                };
-                _context.User.Add(user);
+            User user = new Owner()
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                PasswordHash = passwordHash,
+                PasswordSalt = passwordSalt,
+                Role = Roles.Owner,
+                CIN = request.CIN,
+                Adress = request.Adress,
+                HasAgancy = request.HasAgancy,
+
+            };
+            _context.User.Add(user);
             await _context.SaveChangesAsync();
-            
-          
-                if (request.HasAgancy)
-                {
 
-                    Agency agency = new Agency()
-                    {
-                        Name = request.agency.Name,
-                        Adress = request.agency.Adress,
-                        OwnerId = user.Id
-                    };
-                    _context.Agency.Add(agency);
-                    await _context.SaveChangesAsync();
-                }
-        
+
+            if (request.HasAgancy)
+            {
+
+                Agency agency = new Agency()
+                {
+                    Name = request.agency.Name,
+                    Adress = request.agency.Adress,
+                    OwnerId = user.Id
+                };
+                _context.Agency.Add(agency);
+                await _context.SaveChangesAsync();
+            }
+
 
             return Ok(user);
         }
@@ -113,7 +113,7 @@ namespace DriveNow.Controllers
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
                 Role = Roles.Tenant,
-                 CIN = request.CIN
+                CIN = request.CIN
             };
 
             _context.User.Add(user);
@@ -126,7 +126,7 @@ namespace DriveNow.Controllers
         [HttpPut("login")]
         public async Task<ActionResult> Login([FromBody] UserLoginDto request)
         {
-            User user =  GetUserByEmail(request.Email);
+            User user = GetUserByEmail(request.Email);
 
             if (user == null)
             {
@@ -209,7 +209,7 @@ namespace DriveNow.Controllers
 
         private User GetUserByEmail(string email)
         {
-            return  _context.User.FirstOrDefault(u => u.Email.Equals(email));
+            return _context.User.FirstOrDefault(u => u.Email.Equals(email));
         }
     }
 }
