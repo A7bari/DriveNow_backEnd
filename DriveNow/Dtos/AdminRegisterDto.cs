@@ -17,6 +17,8 @@ namespace DriveNow.Dtos
 
         [Compare("Password")]
         public string RetipedPassword { get; set; } = string.Empty;
+        [Phone]
+        public string Phone { get; set; }
 
     }
 }
