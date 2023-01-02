@@ -40,8 +40,15 @@ namespace DriveNow.Controllers
             var pageCount = Math.Ceiling(_context.Car.Count() / pageResults);
             var cars = await _context.Car.Include(c=>c.ReservationPeriods).ToListAsync();
             
-            if (filter.maxkilometrage.HasValue || filter.minPrice.HasValue || filter.maxPrice.HasValue || filter.typegasoile != null)
+            if (filter.maxkilometrage.HasValue || filter.minPrice.HasValue || filter.maxPrice.HasValue || filter.typegasoile != null || !filter.key.IsNullOrEmpty())
             {
+                if (!filter.key.IsNullOrEmpty())
+                {
+                    cars= cars.Where(c => c.Brand.Contains(filter.key) || c.Description.Contains(filter.key) || c.Color.Contains(filter.key))
+                    .Skip((page - 1) * (int)pageResults)
+                    .Take((int)pageResults)
+                    .ToList();
+                }
                 
                 if (filter.minPrice.HasValue)
                 {
