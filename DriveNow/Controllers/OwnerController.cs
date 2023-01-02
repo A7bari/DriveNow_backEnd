@@ -2,6 +2,7 @@
 using DriveNow.Dtos;
 using DriveNow.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DriveNow.Controllers
 {
@@ -36,6 +37,31 @@ namespace DriveNow.Controllers
             _context.Complain.Add(newComplain);
             await _context.SaveChangesAsync();
             return Ok();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<List<Owner>>> UpdateOwner (OwnerRegisterDto owner , int id )
+        {
+            var _owner = await _context.Owner.FindAsync(id);
+            if (_owner == null)
+            {
+                return NotFound();
+            }
+            _owner.FirstName = owner.FirstName;
+            _owner.LastName = owner.LastName;
+            _owner.Email = owner.Email;
+            _owner.Adress=owner.Adress;
+            _owner.CIN = owner.CIN;
+            if (_owner.HasAgancy)
+            {
+                _owner.Agency.Name = owner.agency.Name;
+                _owner.Agency.Adress = owner.agency.Adress;
+            }
+            else {
+                _owner.Agency = null;
+            }
+            await _context.SaveChangesAsync();
+            return Ok(await _context.Owner.ToListAsync());
         }
     }
 }
