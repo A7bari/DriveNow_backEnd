@@ -22,18 +22,13 @@ namespace DriveNow.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-
             modelBuilder.Entity("DriveNow.Models.Agency", b =>
-
-            modelBuilder.Entity("DriveNow.Models.Car", b =>
-
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
 
                     b.Property<string>("Adress")
                         .IsRequired()
@@ -52,6 +47,51 @@ namespace DriveNow.Migrations
                         .IsUnique();
 
                     b.ToTable("Agency");
+                });
+
+            modelBuilder.Entity("DriveNow.Models.Car", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FuelType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Km")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.Property<int>("ProductionYear")
+                        .HasColumnType("int");
+
+                    b.Property<string>("imageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("Car", (string)null);
                 });
 
             modelBuilder.Entity("DriveNow.Models.Complain", b =>
@@ -79,34 +119,6 @@ namespace DriveNow.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Complain", (string)null);
-
-                    b.Property<string>("Brand")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FuelType")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Km")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
-
-                    b.Property<int>("ProductionYear")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Car");
                 });
 
             modelBuilder.Entity("DriveNow.Models.ReservationPeriod", b =>
@@ -131,7 +143,6 @@ namespace DriveNow.Migrations
                     b.HasIndex("CarId");
 
                     b.ToTable("ReservationPeriods");
-
                 });
 
             modelBuilder.Entity("DriveNow.Models.User", b =>
@@ -222,6 +233,17 @@ namespace DriveNow.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("DriveNow.Models.Car", b =>
+                {
+                    b.HasOne("DriveNow.Models.User", "user")
+                        .WithMany("cars")
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("DriveNow.Models.Complain", b =>
                 {
                     b.HasOne("DriveNow.Models.User", "user")
@@ -231,6 +253,7 @@ namespace DriveNow.Migrations
                         .IsRequired();
 
                     b.Navigation("user");
+                });
 
             modelBuilder.Entity("DriveNow.Models.ReservationPeriod", b =>
                 {
@@ -241,7 +264,6 @@ namespace DriveNow.Migrations
                         .IsRequired();
 
                     b.Navigation("Car");
-
                 });
 
             modelBuilder.Entity("DriveNow.Models.Admin", b =>
@@ -271,19 +293,21 @@ namespace DriveNow.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DriveNow.Models.Car", b =>
+                {
+                    b.Navigation("ReservationPeriods");
+                });
+
             modelBuilder.Entity("DriveNow.Models.User", b =>
                 {
+                    b.Navigation("cars");
+
                     b.Navigation("complains");
                 });
 
             modelBuilder.Entity("DriveNow.Models.Owner", b =>
                 {
                     b.Navigation("Agency");
-
-            modelBuilder.Entity("DriveNow.Models.Car", b =>
-                {
-                    b.Navigation("ReservationPeriods");
-
                 });
 #pragma warning restore 612, 618
         }

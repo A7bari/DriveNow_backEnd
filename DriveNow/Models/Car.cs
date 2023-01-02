@@ -29,5 +29,9 @@ namespace DriveNow.Models
         
         public List<ReservationPeriod> ReservationPeriods { get; set; }
 
+        public User user { get; set; }
+        public int userId { get; set; }
+        public string? imageUrl { get; set; }
+
     }
 }

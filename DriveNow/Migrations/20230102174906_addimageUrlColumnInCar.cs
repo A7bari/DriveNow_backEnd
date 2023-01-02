@@ -5,14 +5,14 @@
 namespace DriveNow.Migrations
 {
     /// <inheritdoc />
-    public partial class addPhoneColtoUser : Migration
+    public partial class addimageUrlColumnInCar : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "phone",
-                table: "User",
+                name: "imageUrl",
+                table: "Car",
                 type: "nvarchar(max)",
                 nullable: true);
         }
@@ -21,8 +21,8 @@ namespace DriveNow.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "phone",
-                table: "User");
+                name: "imageUrl",
+                table: "Car");
         }
     }
 }

@@ -25,5 +25,7 @@ namespace DriveNow.Dtos
 
         [Required]
         public string Description { get; set; } = string.Empty;
+        public string? imgUrl { get; set; } = string.Empty;
+        public int userId { get; set; }
     }
 }
