@@ -10,11 +10,8 @@ namespace DriveNow.Controllers
 {
     public class ComplainController:ControllerBase
     {
-
-
         private readonly DriveNowContext _context;
         private readonly IConfiguration _configuration;
-
         public ComplainController(IConfiguration configuration, DriveNowContext context)
         {
             _configuration = configuration;

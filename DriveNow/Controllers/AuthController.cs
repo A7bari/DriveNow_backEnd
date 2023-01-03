@@ -77,8 +77,6 @@ namespace DriveNow.Controllers
             };
             _context.User.Add(user);
             await _context.SaveChangesAsync();
-
-
             if (request.HasAgancy)
             {
 

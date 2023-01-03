@@ -7,16 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace DriveNow.Controllers
 {
     public class UserController:ControllerBase
-    {
-        private readonly DriveNowContext _context;
+    {   private readonly DriveNowContext _context;
         private readonly IConfiguration _configuration;
-
         public UserController(IConfiguration configuration, DriveNowContext context)
         {
             _configuration = configuration;
             _context = context;
         }
-
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
@@ -30,6 +27,13 @@ namespace DriveNow.Controllers
             _context.User.Remove(_user);
             await _context.SaveChangesAsync();
             return Ok(_user);
+        }
+
+        [HttpGet("users")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<User>> GetAll()
+        {
+            return Ok( _context.User.ToList());
         }
     }
 }
